@@ -58,7 +58,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 15px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         
         .score-box, .time-box {
@@ -69,6 +69,107 @@
             font-weight: 700;
             font-size: 18px;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .skill-bar-container {
+            padding: 5px 15px 10px;
+        }
+        
+        .skill-bar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .skill-bar {
+            flex: 1;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .skill-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff);
+            background-size: 200% 100%;
+            animation: gradientMove 2s linear infinite;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .skill-bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: #333;
+            text-shadow: 0 0 3px white;
+        }
+        
+        .skill-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .skill-btn.ready {
+            opacity: 1;
+            pointer-events: auto;
+            animation: skillReady 0.5s ease infinite alternate;
+        }
+        
+        @keyframes skillReady {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
+            100% { transform: scale(1.05); box-shadow: 0 6px 25px rgba(255, 107, 107, 0.6); }
+        }
+        
+        .skill-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .skill-level {
+            font-size: 10px;
+            display: block;
+        }
+        
+        .sound-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+        
+        .sound-btn:active {
+            transform: scale(0.9);
         }
         
         .chain-indicator {
@@ -101,6 +202,102 @@
             border-radius: 20px;
             background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%);
             display: block;
+        }
+        
+        /* 花火キャンバス */
+        #fireworkCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2000;
+        }
+        
+        /* 必殺技セレクター */
+        .skill-selector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+        }
+        
+        .skill-selector.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .skill-selector-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+        }
+        
+        .skill-selector-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            max-width: 300px;
+        }
+        
+        .color-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-option:hover, .color-option.selected {
+            transform: scale(1.15);
+            border-color: white;
+        }
+        
+        .color-option.selected {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+        
+        .skill-confirm-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-confirm-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .skill-confirm-btn:not(:disabled):hover {
+            transform: scale(1.05);
         }
         
         .game-over-screen {
@@ -149,6 +346,12 @@
             font-size: 64px;
             font-weight: 900;
             color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .final-stats {
+            color: #666;
+            font-size: 14px;
             margin-bottom: 30px;
         }
         
@@ -262,6 +465,8 @@
     </style>
 </head>
 <body>
+    <canvas id="fireworkCanvas"></canvas>
+    
     <div class="start-screen" id="startScreen">
         <div class="title">🎮 ツムパズル</div>
         <div class="subtitle">同じ色をつなげて消そう！</div>
@@ -275,7 +480,8 @@
         <button class="start-btn" id="startBtn">スタート！</button>
         <div class="instructions">
             👆 同じ色のツムを3つ以上なぞってつなげよう<br>
-            ⏱️ 60秒で高スコアを目指せ！
+            ⏱️ 60秒で高スコアを目指せ！<br>
+            💥 100個消すと必殺技が使える！
         </div>
     </div>
     
@@ -284,20 +490,397 @@
             <div class="score-box">🌟 <span id="score">0</span></div>
             <div class="time-box">⏱️ <span id="time">60</span></div>
         </div>
+        <div class="skill-bar-container">
+            <div class="skill-bar-wrapper">
+                <div class="skill-bar">
+                    <div class="skill-bar-fill" id="skillBarFill"></div>
+                    <div class="skill-bar-text" id="skillBarText">0 / 100</div>
+                </div>
+                <button class="skill-btn" id="skillBtn">
+                    💥必殺技
+                    <span class="skill-level" id="skillLevel">Lv.1</span>
+                </button>
+            </div>
+        </div>
+        <button class="sound-btn" id="soundBtn">🔊</button>
         <div class="chain-indicator" id="chainIndicator"></div>
         <canvas id="gameCanvas"></canvas>
+    </div>
+    
+    <div class="skill-selector" id="skillSelector">
+        <div class="skill-selector-title">💥 必殺技発動！</div>
+        <div class="skill-selector-subtitle" id="skillSelectorSubtitle">消す色を1つ選んでください</div>
+        <div class="color-options" id="colorOptions"></div>
+        <button class="skill-confirm-btn" id="skillConfirmBtn" disabled>発動！</button>
     </div>
     
     <div class="game-over-screen" id="gameOverScreen">
         <div class="game-over-content">
             <div class="game-over-title">🎉 タイムアップ！</div>
             <div class="final-score" id="finalScore">0</div>
+            <div class="final-stats" id="finalStats"></div>
             <button class="restart-btn" id="restartBtn">もう一回！</button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script>
+        // ===== 花火システム =====
+        class FireworkSystem {
+            constructor() {
+                this.canvas = document.getElementById('fireworkCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createFirework(x, y, color) {
+                const particleCount = 50;
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.5;
+                    const speed = 3 + Math.random() * 5;
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        color: color,
+                        life: 1,
+                        decay: 0.015 + Math.random() * 0.01,
+                        size: 3 + Math.random() * 3
+                    });
+                }
+            }
+            
+            createMultiFirework(colors) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                colors.forEach((color, index) => {
+                    setTimeout(() => {
+                        const x = centerX + (Math.random() - 0.5) * 300;
+                        const y = centerY + (Math.random() - 0.5) * 200;
+                        this.createFirework(x, y, color);
+                        
+                        // 追加の小さい花火
+                        setTimeout(() => {
+                            this.createFirework(x + 50, y - 30, color);
+                            this.createFirework(x - 50, y + 30, color);
+                        }, 100);
+                    }, index * 200);
+                });
+            }
+            
+            update() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1; // 重力
+                    p.vx *= 0.98;
+                    p.vy *= 0.98;
+                    p.life -= p.decay;
+                    
+                    if (p.life <= 0) {
+                        this.particles.splice(i, 1);
+                        continue;
+                    }
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.globalAlpha = p.life;
+                    this.ctx.fill();
+                    
+                    // 光の軌跡
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size * p.life * 2, 0, Math.PI * 2);
+                    this.ctx.fillStyle = 'white';
+                    this.ctx.globalAlpha = p.life * 0.3;
+                    this.ctx.fill();
+                }
+                
+                this.ctx.globalAlpha = 1;
+                
+                if (this.particles.length > 0) {
+                    requestAnimationFrame(() => this.update());
+                }
+            }
+            
+            start() {
+                if (this.particles.length > 0) return;
+                this.update();
+            }
+        }
+        
+        const fireworkSystem = new FireworkSystem();
+        
+        // ===== サウンドシステム =====
+        class SoundManager {
+            constructor() {
+                this.audioContext = null;
+                this.enabled = true;
+                this.bgmOscillator = null;
+                this.bgmGain = null;
+                this.initialized = false;
+            }
+            
+            init() {
+                if (this.initialized) return;
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.initialized = true;
+            }
+            
+            playPop(pitch = 1) {
+                if (!this.enabled || !this.audioContext) return;
+                
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.audioContext.destination);
+                
+                osc.frequency.setValueAtTime(600 * pitch, this.audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800 * pitch, this.audioContext.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.15);
+            }
+            
+            playChainSuccess(chainLength) {
+                if (!this.enabled || !this.audioContext) return;
+                
+                const baseFreq = 400;
+                const notes = [1, 1.25, 1.5, 1.875, 2];
+                
+                for (let i = 0; i < Math.min(chainLength, 8); i++) {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        
+                        osc.type = 'sine';
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        const freq = baseFreq * notes[i % notes.length] * (1 + Math.floor(i / 5) * 0.5);
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        
+                        gain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+                        
+                        osc.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.2);
+                    }, i * 60);
+                }
+            }
+            
+            playBigChain() {
+                if (!this.enabled || !this.audioContext) return;
+                
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        
+                        osc.type = 'sine';
+                        osc2.type = 'triangle';
+                        osc.connect(gain);
+                        osc2.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        osc2.frequency.setValueAtTime(freq * 2, this.audioContext.currentTime);
+                        
+                        gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.4);
+                        
+                        osc.start(this.audioContext.currentTime);
+                        osc2.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.4);
+                        osc2.stop(this.audioContext.currentTime + 0.4);
+                    }, i * 100);
+                });
+            }
+            
+            // 必殺技発動音
+            playSkillActivate() {
+                if (!this.enabled || !this.audioContext) return;
+                
+                // 上昇音
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+                
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        
+                        osc.type = 'sine';
+                        osc2.type = 'square';
+                        osc.connect(gain);
+                        osc2.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        osc2.frequency.setValueAtTime(freq * 0.5, this.audioContext.currentTime);
+                        
+                        gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+                        
+                        osc.start(this.audioContext.currentTime);
+                        osc2.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.2);
+                        osc2.stop(this.audioContext.currentTime + 0.2);
+                    }, i * 50);
+                });
+            }
+            
+            // 花火音
+            playFirework() {
+                if (!this.enabled || !this.audioContext) return;
+                
+                // シュー音
+                const bufferSize = this.audioContext.sampleRate * 0.5;
+                const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+                }
+                
+                const noise = this.audioContext.createBufferSource();
+                const filter = this.audioContext.createBiquadFilter();
+                const gain = this.audioContext.createGain();
+                
+                noise.buffer = buffer;
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(2000, this.audioContext.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(500, this.audioContext.currentTime + 0.3);
+                
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.audioContext.destination);
+                
+                gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+                
+                noise.start(this.audioContext.currentTime);
+                
+                // パン音
+                setTimeout(() => {
+                    const osc = this.audioContext.createOscillator();
+                    const g = this.audioContext.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.3);
+                    osc.connect(g);
+                    g.connect(this.audioContext.destination);
+                    g.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                    osc.start(this.audioContext.currentTime);
+                    osc.stop(this.audioContext.currentTime + 0.3);
+                }, 100);
+            }
+            
+            playGameOver() {
+                if (!this.enabled || !this.audioContext) return;
+                
+                const notes = [440, 415.30, 392, 349.23];
+                
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        
+                        osc.type = 'sine';
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        
+                        gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+                        
+                        osc.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.5);
+                    }, i * 200);
+                });
+            }
+            
+            startBGM() {
+                if (!this.enabled || !this.audioContext || this.bgmInterval) return;
+                
+                this.bgmGain = this.audioContext.createGain();
+                this.bgmGain.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+                this.bgmGain.connect(this.audioContext.destination);
+                
+                const notes = [262, 330, 392, 523, 392, 330];
+                let noteIndex = 0;
+                
+                const playNext = () => {
+                    if (!this.enabled || !this.bgmGain) return;
+                    
+                    const osc = this.audioContext.createOscillator();
+                    const noteGain = this.audioContext.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.connect(noteGain);
+                    noteGain.connect(this.bgmGain);
+                    
+                    osc.frequency.setValueAtTime(notes[noteIndex], this.audioContext.currentTime);
+                    
+                    noteGain.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                    
+                    osc.start(this.audioContext.currentTime);
+                    osc.stop(this.audioContext.currentTime + 0.3);
+                    
+                    noteIndex = (noteIndex + 1) % notes.length;
+                };
+                
+                this.bgmInterval = setInterval(playNext, 250);
+                playNext();
+            }
+            
+            stopBGM() {
+                if (this.bgmInterval) {
+                    clearInterval(this.bgmInterval);
+                    this.bgmInterval = null;
+                }
+                if (this.bgmGain) {
+                    this.bgmGain.disconnect();
+                    this.bgmGain = null;
+                }
+            }
+            
+            toggle() {
+                this.enabled = !this.enabled;
+                if (!this.enabled) {
+                    this.stopBGM();
+                } else if (gameRunning) {
+                    this.startBGM();
+                }
+                return this.enabled;
+            }
+        }
+        
+        const soundManager = new SoundManager();
+        
         // ゲーム設定
         const TSUM_RADIUS = 28;
         const TSUM_TYPES = [
@@ -309,13 +892,14 @@
         ];
         const GAME_TIME = 60;
         const MIN_CHAIN = 3;
+        const SKILL_THRESHOLD = 100;
         
         // Matter.js セットアップ
         const { Engine, Render, Runner, Bodies, Body, Composite, Events, Mouse, Query } = Matter;
         
         // キャンバスサイズ
         const canvasWidth = Math.min(360, window.innerWidth - 40);
-        const canvasHeight = Math.min(540, window.innerHeight - 200);
+        const canvasHeight = Math.min(500, window.innerHeight - 250);
         
         // ゲーム状態
         let engine, render, runner;
@@ -327,6 +911,10 @@
         let timeLeft = GAME_TIME;
         let gameRunning = false;
         let timerInterval;
+        let totalCleared = 0;
+        let skillLevel = 0;
+        let selectedColors = [];
+        let skillUsedCount = 0;
         
         // キャンバス設定
         const canvas = document.getElementById('gameCanvas');
@@ -334,12 +922,145 @@
         canvas.height = canvasHeight;
         const ctx = canvas.getContext('2d');
         
+        // 必殺技レベル計算
+        function getSkillLevel() {
+            if (totalCleared >= 500) return 5;
+            if (totalCleared >= 400) return 4;
+            if (totalCleared >= 300) return 3;
+            if (totalCleared >= 200) return 2;
+            if (totalCleared >= 100) return 1;
+            return 0;
+        }
+        
+        // 必殺技ゲージ更新
+        function updateSkillBar() {
+            const level = getSkillLevel();
+            const thresholds = [100, 200, 300, 400, 500];
+            const prevThreshold = level > 0 ? thresholds[level - 1] : 0;
+            const nextThreshold = thresholds[Math.min(level, 4)];
+            
+            const progress = level >= 5 ? 100 : 
+                ((totalCleared - prevThreshold) / (nextThreshold - prevThreshold)) * 100;
+            
+            document.getElementById('skillBarFill').style.width = `${Math.min(100, progress)}%`;
+            document.getElementById('skillBarText').textContent = 
+                level >= 5 ? 'MAX!' : `${totalCleared} / ${nextThreshold}`;
+            
+            const skillBtn = document.getElementById('skillBtn');
+            const newLevel = getSkillLevel();
+            
+            if (newLevel > 0 && newLevel > skillLevel) {
+                skillBtn.classList.add('ready');
+                document.getElementById('skillLevel').textContent = `Lv.${newLevel} (${newLevel}色)`;
+            }
+            
+            skillLevel = newLevel;
+        }
+        
+        // 色選択UI作成
+        function createColorOptions(maxColors) {
+            const container = document.getElementById('colorOptions');
+            container.innerHTML = '';
+            selectedColors = [];
+            
+            TSUM_TYPES.forEach((type, index) => {
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.background = `linear-gradient(135deg, ${type.gradient[0]}, ${type.gradient[1]})`;
+                option.dataset.colorName = type.name;
+                
+                option.addEventListener('click', () => {
+                    if (option.classList.contains('selected')) {
+                        option.classList.remove('selected');
+                        selectedColors = selectedColors.filter(c => c !== type.name);
+                    } else if (selectedColors.length < maxColors) {
+                        option.classList.add('selected');
+                        selectedColors.push(type.name);
+                    }
+                    
+                    document.getElementById('skillConfirmBtn').disabled = selectedColors.length === 0;
+                });
+                
+                container.appendChild(option);
+            });
+            
+            document.getElementById('skillSelectorSubtitle').textContent = 
+                `消す色を${maxColors}つまで選んでください`;
+        }
+        
+        // 必殺技発動
+        function activateSkill() {
+            const level = getSkillLevel();
+            if (level === 0) return;
+            
+            createColorOptions(level);
+            document.getElementById('skillSelector').classList.add('show');
+            document.getElementById('skillConfirmBtn').disabled = true;
+        }
+        
+        // 必殺技実行
+        function executeSkill() {
+            document.getElementById('skillSelector').classList.remove('show');
+            
+            if (selectedColors.length === 0) return;
+            
+            soundManager.playSkillActivate();
+            
+            // 選択した色のツムを全て消す
+            const colorsToRemove = [...selectedColors];
+            const tsumsToRemove = tsums.filter(t => colorsToRemove.includes(t.tsumType.name));
+            
+            if (tsumsToRemove.length === 0) return;
+            
+            // スコア計算
+            const clearedCount = tsumsToRemove.length;
+            const skillBonus = clearedCount * 15 * selectedColors.length;
+            score += skillBonus;
+            document.getElementById('score').textContent = score;
+            
+            // チェーンインジケーター
+            const indicator = document.getElementById('chainIndicator');
+            indicator.textContent = `💥 ${clearedCount}個消去！`;
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 800);
+            
+            // 花火エフェクト
+            const fireworkColors = colorsToRemove.map(name => 
+                TSUM_TYPES.find(t => t.name === name).color
+            );
+            
+            setTimeout(() => {
+                soundManager.playFirework();
+                fireworkSystem.createMultiFirework(fireworkColors);
+                fireworkSystem.start();
+            }, 300);
+            
+            // ツム削除（少し遅延させて演出）
+            setTimeout(() => {
+                tsumsToRemove.forEach(tsum => {
+                    Composite.remove(engine.world, tsum);
+                    const index = tsums.indexOf(tsum);
+                    if (index > -1) tsums.splice(index, 1);
+                });
+                
+                // ゲージリセット
+                totalCleared = 0;
+                skillLevel = 0;
+                skillUsedCount++;
+                updateSkillBar();
+                document.getElementById('skillBtn').classList.remove('ready');
+                document.getElementById('skillLevel').textContent = 'Lv.1';
+                
+                // ツム補充
+                setTimeout(refillTsums, 300);
+            }, 500);
+        }
+        
         // 物理エンジン初期化
         function initPhysics() {
             engine = Engine.create();
             engine.gravity.y = 1;
             
-            // 壁を作成
             const walls = [
                 Bodies.rectangle(canvasWidth / 2, canvasHeight + 30, canvasWidth + 100, 60, { isStatic: true, label: 'floor' }),
                 Bodies.rectangle(-30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true, label: 'leftWall' }),
@@ -352,7 +1073,6 @@
             Runner.run(runner, engine);
         }
         
-        // ツム作成
         function createTsum(x, y) {
             const type = TSUM_TYPES[Math.floor(Math.random() * TSUM_TYPES.length)];
             const tsum = Bodies.circle(x, y, TSUM_RADIUS, {
@@ -369,7 +1089,6 @@
             return tsum;
         }
         
-        // 初期ツム配置
         function spawnInitialTsums() {
             for (let i = 0; i < 35; i++) {
                 const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
@@ -378,7 +1097,6 @@
             }
         }
         
-        // ツム補充
         function refillTsums() {
             const targetCount = 35;
             const currentCount = tsums.length;
@@ -393,7 +1111,6 @@
             }
         }
         
-        // ツム描画
         function drawTsum(tsum, isSelected) {
             const pos = tsum.position;
             const type = tsum.tsumType;
@@ -402,24 +1119,20 @@
             ctx.translate(pos.x, pos.y);
             ctx.rotate(tsum.angle);
             
-            // 影
             ctx.beginPath();
             ctx.arc(3, 5, TSUM_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.fill();
             
-            // グラデーション
             const gradient = ctx.createRadialGradient(-8, -8, 0, 0, 0, TSUM_RADIUS);
             gradient.addColorStop(0, type.gradient[0]);
             gradient.addColorStop(1, type.gradient[1]);
             
-            // 本体
             ctx.beginPath();
             ctx.arc(0, 0, TSUM_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = gradient;
             ctx.fill();
             
-            // 選択時のハイライト
             if (isSelected) {
                 ctx.strokeStyle = 'white';
                 ctx.lineWidth = 4;
@@ -431,13 +1144,11 @@
                 ctx.stroke();
             }
             
-            // 光沢
             ctx.beginPath();
             ctx.arc(-8, -8, TSUM_RADIUS * 0.35, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             ctx.fill();
             
-            // 目
             ctx.fillStyle = '#333';
             ctx.beginPath();
             ctx.ellipse(-7, -2, 4, 5, 0, 0, Math.PI * 2);
@@ -446,7 +1157,6 @@
             ctx.ellipse(7, -2, 4, 5, 0, 0, Math.PI * 2);
             ctx.fill();
             
-            // 目のハイライト
             ctx.fillStyle = 'white';
             ctx.beginPath();
             ctx.arc(-8, -4, 2, 0, Math.PI * 2);
@@ -455,7 +1165,6 @@
             ctx.arc(6, -4, 2, 0, Math.PI * 2);
             ctx.fill();
             
-            // ほっぺ
             ctx.fillStyle = 'rgba(255, 150, 150, 0.4)';
             ctx.beginPath();
             ctx.ellipse(-15, 8, 6, 4, 0, 0, Math.PI * 2);
@@ -464,7 +1173,6 @@
             ctx.ellipse(15, 8, 6, 4, 0, 0, Math.PI * 2);
             ctx.fill();
             
-            // 口
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 2;
             ctx.lineCap = 'round';
@@ -475,7 +1183,6 @@
             ctx.restore();
         }
         
-        // チェーンライン描画
         function drawChainLine() {
             if (currentChain.length < 2) return;
             
@@ -494,24 +1201,20 @@
             
             ctx.stroke();
             
-            // グロー効果
             ctx.strokeStyle = currentChain[0].tsumType.color;
             ctx.lineWidth = 3;
             ctx.stroke();
         }
         
-        // ゲームループ
         function gameLoop() {
             if (!gameRunning) return;
             
-            // 背景クリア
             const bgGradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
             bgGradient.addColorStop(0, '#ffecd2');
             bgGradient.addColorStop(1, '#fcb69f');
             ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             
-            // 画面外のツムを削除
             tsums = tsums.filter(tsum => {
                 if (tsum.position.y > canvasHeight + 100) {
                     Composite.remove(engine.world, tsum);
@@ -520,10 +1223,8 @@
                 return true;
             });
             
-            // チェーンライン描画
             drawChainLine();
             
-            // ツム描画
             tsums.forEach(tsum => {
                 const isSelected = currentChain.includes(tsum);
                 drawTsum(tsum, isSelected);
@@ -532,7 +1233,6 @@
             requestAnimationFrame(gameLoop);
         }
         
-        // タッチ/マウス座標取得
         function getEventPos(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -543,7 +1243,6 @@
             };
         }
         
-        // ツム取得
         function getTsumAt(pos) {
             for (const tsum of tsums) {
                 const dx = tsum.position.x - pos.x;
@@ -555,7 +1254,6 @@
             return null;
         }
         
-        // チェーンに追加可能か
         function canAddToChain(tsum) {
             if (currentChain.length === 0) return true;
             if (currentChain.includes(tsum)) return false;
@@ -570,7 +1268,6 @@
             return distance < TSUM_RADIUS * 3;
         }
         
-        // チェーンインジケーター表示
         function showChainIndicator(count) {
             const indicator = document.getElementById('chainIndicator');
             if (count >= 5) {
@@ -582,7 +1279,6 @@
             setTimeout(() => indicator.classList.remove('show'), 500);
         }
         
-        // チェーン確定
         function confirmChain() {
             if (currentChain.length >= MIN_CHAIN) {
                 const chainLength = currentChain.length;
@@ -591,25 +1287,30 @@
                 const earnedScore = Math.floor(baseScore + bonus);
                 
                 score += earnedScore;
+                totalCleared += chainLength;
                 document.getElementById('score').textContent = score;
                 
                 showChainIndicator(chainLength);
+                updateSkillBar();
                 
-                // ツム削除
+                if (chainLength >= 7) {
+                    soundManager.playBigChain();
+                } else {
+                    soundManager.playChainSuccess(chainLength);
+                }
+                
                 currentChain.forEach(tsum => {
                     Composite.remove(engine.world, tsum);
                     const index = tsums.indexOf(tsum);
                     if (index > -1) tsums.splice(index, 1);
                 });
                 
-                // 補充
                 setTimeout(refillTsums, 300);
             }
             
             currentChain = [];
         }
         
-        // イベントリスナー
         function handleStart(e) {
             e.preventDefault();
             if (!gameRunning) return;
@@ -620,6 +1321,7 @@
             
             if (tsum) {
                 currentChain = [tsum];
+                soundManager.playPop(1);
             }
         }
         
@@ -632,6 +1334,7 @@
             
             if (tsum && canAddToChain(tsum)) {
                 currentChain.push(tsum);
+                soundManager.playPop(1 + currentChain.length * 0.1);
             }
         }
         
@@ -643,7 +1346,6 @@
             confirmChain();
         }
         
-        // タイマー
         function startTimer() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -655,42 +1357,51 @@
             }, 1000);
         }
         
-        // ゲーム終了
         function endGame() {
             gameRunning = false;
             clearInterval(timerInterval);
+            soundManager.stopBGM();
+            soundManager.playGameOver();
             document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalStats').textContent = 
+                `消去数: ${totalCleared}個 | 必殺技: ${skillUsedCount}回`;
             document.getElementById('gameOverScreen').classList.add('show');
         }
         
-        // ゲームリセット
         function resetGame() {
-            // 既存のツムを削除
             tsums.forEach(tsum => Composite.remove(engine.world, tsum));
             tsums = [];
             currentChain = [];
             score = 0;
             timeLeft = GAME_TIME;
+            totalCleared = 0;
+            skillLevel = 0;
+            skillUsedCount = 0;
             
             document.getElementById('score').textContent = '0';
             document.getElementById('time').textContent = GAME_TIME;
             document.getElementById('gameOverScreen').classList.remove('show');
+            document.getElementById('skillBtn').classList.remove('ready');
+            document.getElementById('skillLevel').textContent = 'Lv.1';
+            updateSkillBar();
             
-            // 新しいツムを配置
             spawnInitialTsums();
             
             gameRunning = true;
+            soundManager.startBGM();
             startTimer();
             gameLoop();
         }
         
-        // ゲーム開始
         function startGame() {
             document.getElementById('startScreen').classList.add('hidden');
+            
+            soundManager.init();
+            
             initPhysics();
             spawnInitialTsums();
+            updateSkillBar();
             
-            // イベントリスナー設定
             canvas.addEventListener('mousedown', handleStart);
             canvas.addEventListener('mousemove', handleMove);
             canvas.addEventListener('mouseup', handleEnd);
@@ -702,14 +1413,21 @@
             canvas.addEventListener('touchcancel', handleEnd, { passive: false });
             
             gameRunning = true;
+            soundManager.startBGM();
             startTimer();
             gameLoop();
         }
         
-        // ボタンイベント
+        // イベントリスナー
+        document.getElementById('soundBtn').addEventListener('click', () => {
+            const enabled = soundManager.toggle();
+            document.getElementById('soundBtn').textContent = enabled ? '🔊' : '🔇';
+        });
+        
+        document.getElementById('skillBtn').addEventListener('click', activateSkill);
+        document.getElementById('skillConfirmBtn').addEventListener('click', executeSkill);
         document.getElementById('startBtn').addEventListener('click', startGame);
         document.getElementById('restartBtn').addEventListener('click', resetGame);
     </script>
 </body>
 </html>
-
