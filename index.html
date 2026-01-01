@@ -1332,6 +1332,7 @@
         }
         
         let lastSkillLevel = 0;
+        let skillActivating = false; // スキル発動中フラグ
         
         function updateSkillBar() {
             const level = getSkillLevel();
@@ -1344,12 +1345,17 @@
                 skillBtn.classList.add('ready');
                 document.getElementById('skillLevel').textContent = `Lv.${level} (${level}色)`;
                 
-                // レベルアップした時にシャキーン！→自動発動！
-                if (level > lastSkillLevel && lastSkillLevel >= 0) {
+                // レベルアップした時にシャキーン！→自動発動！（発動中でなければ）
+                if (level > lastSkillLevel && lastSkillLevel >= 0 && !skillActivating) {
+                    lastSkillLevel = level; // 先に更新して二重発動防止
                     soundManager.playSkillReady();
+                    skillActivating = true;
                     // 少し遅延して自動発動
                     setTimeout(() => {
-                        if (gameRunning) activateSkill();
+                        if (gameRunning) {
+                            activateSkill();
+                        }
+                        skillActivating = false;
                     }, 500);
                 }
             } else {
@@ -1849,6 +1855,8 @@
             isFever = false;
             feverTimeLeft = 0;
             isRushMode = false;
+            lastSkillLevel = 0;
+            skillActivating = false;
             
             document.getElementById('score').textContent = '0';
             document.getElementById('time').textContent = GAME_TIME;
@@ -1900,7 +1908,7 @@
             document.getElementById('soundBtn').textContent = enabled ? '🔊' : '🔇';
         });
         
-        document.getElementById('skillBtn').addEventListener('click', activateSkill);
+        // スキルは自動発動のみ（ボタンは表示用）
         document.getElementById('startBtn').addEventListener('click', startGame);
         document.getElementById('restartBtn').addEventListener('click', resetGame);
     </script>
