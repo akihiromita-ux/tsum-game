@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ツムツム風パズル</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+        
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 40% 40%, rgba(255,182,193,0.1) 0%, transparent 30%);
+            pointer-events: none;
+        }
+        
+        .game-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 
+                0 25px 80px rgba(102, 126, 234, 0.4),
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            max-width: 100vw;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+        
+        .score-box, .time-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .chain-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: 900;
+            color: #ff6b6b;
+            text-shadow: 0 4px 20px rgba(255, 107, 107, 0.5);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .chain-indicator.show {
+            opacity: 1;
+            animation: chainPop 0.5s ease-out;
+        }
+        
+        @keyframes chainPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+        
+        #gameCanvas {
+            border-radius: 20px;
+            background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%);
+            display: block;
+        }
+        
+        .game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .game-over-screen.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .game-over-content {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-over-title {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .final-score {
+            font-size: 64px;
+            font-weight: 900;
+            color: #764ba2;
+            margin-bottom: 30px;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .restart-btn:hover, .restart-btn:active {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+        }
+        
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+        
+        .start-screen.hidden {
+            display: none;
+        }
+        
+        .title {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+        
+        .start-btn {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 20px 80px;
+            font-size: 24px;
+            font-weight: 900;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover, .start-btn:active {
+            transform: scale(1.1);
+        }
+        
+        .demo-tsums {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .demo-tsum {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .demo-tsum:nth-child(1) { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); animation-delay: 0s; }
+        .demo-tsum:nth-child(2) { background: linear-gradient(135deg, #4ecdc4, #44a08d); animation-delay: 0.5s; }
+        .demo-tsum:nth-child(3) { background: linear-gradient(135deg, #ffe66d, #f4d03f); animation-delay: 1s; }
+        .demo-tsum:nth-child(4) { background: linear-gradient(135deg, #a29bfe, #6c5ce7); animation-delay: 1.5s; }
+        .demo-tsum:nth-child(5) { background: linear-gradient(135deg, #fd79a8, #e84393); animation-delay: 2s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+        
+        .instructions {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="startScreen">
+        <div class="title">🎮 ツムパズル</div>
+        <div class="subtitle">同じ色をつなげて消そう！</div>
+        <div class="demo-tsums">
+            <div class="demo-tsum"></div>
+            <div class="demo-tsum"></div>
+            <div class="demo-tsum"></div>
+            <div class="demo-tsum"></div>
+            <div class="demo-tsum"></div>
+        </div>
+        <button class="start-btn" id="startBtn">スタート！</button>
+        <div class="instructions">
+            👆 同じ色のツムを3つ以上なぞってつなげよう<br>
+            ⏱️ 60秒で高スコアを目指せ！
+        </div>
+    </div>
+    
+    <div class="game-container">
+        <div class="header">
+            <div class="score-box">🌟 <span id="score">0</span></div>
+            <div class="time-box">⏱️ <span id="time">60</span></div>
+        </div>
+        <div class="chain-indicator" id="chainIndicator"></div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    
+    <div class="game-over-screen" id="gameOverScreen">
+        <div class="game-over-content">
+            <div class="game-over-title">🎉 タイムアップ！</div>
+            <div class="final-score" id="finalScore">0</div>
+            <button class="restart-btn" id="restartBtn">もう一回！</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        // ゲーム設定
+        const TSUM_RADIUS = 28;
+        const TSUM_TYPES = [
+            { color: '#ff6b6b', gradient: ['#ff6b6b', '#ee5a5a'], name: 'red' },
+            { color: '#4ecdc4', gradient: ['#4ecdc4', '#44a08d'], name: 'teal' },
+            { color: '#ffe66d', gradient: ['#ffe66d', '#f4d03f'], name: 'yellow' },
+            { color: '#a29bfe', gradient: ['#a29bfe', '#6c5ce7'], name: 'purple' },
+            { color: '#fd79a8', gradient: ['#fd79a8', '#e84393'], name: 'pink' }
+        ];
+        const GAME_TIME = 60;
+        const MIN_CHAIN = 3;
+        
+        // Matter.js セットアップ
+        const { Engine, Render, Runner, Bodies, Body, Composite, Events, Mouse, Query } = Matter;
+        
+        // キャンバスサイズ
+        const canvasWidth = Math.min(360, window.innerWidth - 40);
+        const canvasHeight = Math.min(540, window.innerHeight - 200);
+        
+        // ゲーム状態
+        let engine, render, runner;
+        let tsums = [];
+        let selectedTsums = [];
+        let currentChain = [];
+        let isDragging = false;
+        let score = 0;
+        let timeLeft = GAME_TIME;
+        let gameRunning = false;
+        let timerInterval;
+        
+        // キャンバス設定
+        const canvas = document.getElementById('gameCanvas');
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        const ctx = canvas.getContext('2d');
+        
+        // 物理エンジン初期化
+        function initPhysics() {
+            engine = Engine.create();
+            engine.gravity.y = 1;
+            
+            // 壁を作成
+            const walls = [
+                Bodies.rectangle(canvasWidth / 2, canvasHeight + 30, canvasWidth + 100, 60, { isStatic: true, label: 'floor' }),
+                Bodies.rectangle(-30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true, label: 'leftWall' }),
+                Bodies.rectangle(canvasWidth + 30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true, label: 'rightWall' })
+            ];
+            
+            Composite.add(engine.world, walls);
+            
+            runner = Runner.create();
+            Runner.run(runner, engine);
+        }
+        
+        // ツム作成
+        function createTsum(x, y) {
+            const type = TSUM_TYPES[Math.floor(Math.random() * TSUM_TYPES.length)];
+            const tsum = Bodies.circle(x, y, TSUM_RADIUS, {
+                restitution: 0.3,
+                friction: 0.1,
+                frictionAir: 0.01,
+                label: 'tsum',
+                render: { visible: false }
+            });
+            tsum.tsumType = type;
+            tsum.id = Math.random().toString(36).substr(2, 9);
+            tsums.push(tsum);
+            Composite.add(engine.world, tsum);
+            return tsum;
+        }
+        
+        // 初期ツム配置
+        function spawnInitialTsums() {
+            for (let i = 0; i < 35; i++) {
+                const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
+                const y = -50 - Math.random() * 400;
+                createTsum(x, y);
+            }
+        }
+        
+        // ツム補充
+        function refillTsums() {
+            const targetCount = 35;
+            const currentCount = tsums.length;
+            const toAdd = targetCount - currentCount;
+            
+            for (let i = 0; i < toAdd; i++) {
+                const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
+                const y = -50 - Math.random() * 200;
+                setTimeout(() => {
+                    if (gameRunning) createTsum(x, y);
+                }, i * 50);
+            }
+        }
+        
+        // ツム描画
+        function drawTsum(tsum, isSelected) {
+            const pos = tsum.position;
+            const type = tsum.tsumType;
+            
+            ctx.save();
+            ctx.translate(pos.x, pos.y);
+            ctx.rotate(tsum.angle);
+            
+            // 影
+            ctx.beginPath();
+            ctx.arc(3, 5, TSUM_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fill();
+            
+            // グラデーション
+            const gradient = ctx.createRadialGradient(-8, -8, 0, 0, 0, TSUM_RADIUS);
+            gradient.addColorStop(0, type.gradient[0]);
+            gradient.addColorStop(1, type.gradient[1]);
+            
+            // 本体
+            ctx.beginPath();
+            ctx.arc(0, 0, TSUM_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // 選択時のハイライト
+            if (isSelected) {
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(0, 0, TSUM_RADIUS + 5, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+            
+            // 光沢
+            ctx.beginPath();
+            ctx.arc(-8, -8, TSUM_RADIUS * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.fill();
+            
+            // 目
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.ellipse(-7, -2, 4, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(7, -2, 4, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 目のハイライト
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(-8, -4, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(6, -4, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // ほっぺ
+            ctx.fillStyle = 'rgba(255, 150, 150, 0.4)';
+            ctx.beginPath();
+            ctx.ellipse(-15, 8, 6, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(15, 8, 6, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 口
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(0, 6, 5, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+        
+        // チェーンライン描画
+        function drawChainLine() {
+            if (currentChain.length < 2) return;
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.setLineDash([]);
+            
+            ctx.beginPath();
+            ctx.moveTo(currentChain[0].position.x, currentChain[0].position.y);
+            
+            for (let i = 1; i < currentChain.length; i++) {
+                ctx.lineTo(currentChain[i].position.x, currentChain[i].position.y);
+            }
+            
+            ctx.stroke();
+            
+            // グロー効果
+            ctx.strokeStyle = currentChain[0].tsumType.color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+        
+        // ゲームループ
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // 背景クリア
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
+            bgGradient.addColorStop(0, '#ffecd2');
+            bgGradient.addColorStop(1, '#fcb69f');
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+            // 画面外のツムを削除
+            tsums = tsums.filter(tsum => {
+                if (tsum.position.y > canvasHeight + 100) {
+                    Composite.remove(engine.world, tsum);
+                    return false;
+                }
+                return true;
+            });
+            
+            // チェーンライン描画
+            drawChainLine();
+            
+            // ツム描画
+            tsums.forEach(tsum => {
+                const isSelected = currentChain.includes(tsum);
+                drawTsum(tsum, isSelected);
+            });
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // タッチ/マウス座標取得
+        function getEventPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+        
+        // ツム取得
+        function getTsumAt(pos) {
+            for (const tsum of tsums) {
+                const dx = tsum.position.x - pos.x;
+                const dy = tsum.position.y - pos.y;
+                if (Math.sqrt(dx * dx + dy * dy) < TSUM_RADIUS) {
+                    return tsum;
+                }
+            }
+            return null;
+        }
+        
+        // チェーンに追加可能か
+        function canAddToChain(tsum) {
+            if (currentChain.length === 0) return true;
+            if (currentChain.includes(tsum)) return false;
+            
+            const lastTsum = currentChain[currentChain.length - 1];
+            if (tsum.tsumType.name !== lastTsum.tsumType.name) return false;
+            
+            const dx = tsum.position.x - lastTsum.position.x;
+            const dy = tsum.position.y - lastTsum.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            return distance < TSUM_RADIUS * 3;
+        }
+        
+        // チェーンインジケーター表示
+        function showChainIndicator(count) {
+            const indicator = document.getElementById('chainIndicator');
+            if (count >= 5) {
+                indicator.textContent = count >= 10 ? '🔥 ' + count + ' 🔥' : '✨ ' + count + ' ✨';
+            } else {
+                indicator.textContent = count + 'チェーン！';
+            }
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 500);
+        }
+        
+        // チェーン確定
+        function confirmChain() {
+            if (currentChain.length >= MIN_CHAIN) {
+                const chainLength = currentChain.length;
+                const baseScore = chainLength * 10;
+                const bonus = Math.pow(chainLength, 1.5) * 5;
+                const earnedScore = Math.floor(baseScore + bonus);
+                
+                score += earnedScore;
+                document.getElementById('score').textContent = score;
+                
+                showChainIndicator(chainLength);
+                
+                // ツム削除
+                currentChain.forEach(tsum => {
+                    Composite.remove(engine.world, tsum);
+                    const index = tsums.indexOf(tsum);
+                    if (index > -1) tsums.splice(index, 1);
+                });
+                
+                // 補充
+                setTimeout(refillTsums, 300);
+            }
+            
+            currentChain = [];
+        }
+        
+        // イベントリスナー
+        function handleStart(e) {
+            e.preventDefault();
+            if (!gameRunning) return;
+            
+            isDragging = true;
+            const pos = getEventPos(e);
+            const tsum = getTsumAt(pos);
+            
+            if (tsum) {
+                currentChain = [tsum];
+            }
+        }
+        
+        function handleMove(e) {
+            e.preventDefault();
+            if (!isDragging || !gameRunning) return;
+            
+            const pos = getEventPos(e);
+            const tsum = getTsumAt(pos);
+            
+            if (tsum && canAddToChain(tsum)) {
+                currentChain.push(tsum);
+            }
+        }
+        
+        function handleEnd(e) {
+            e.preventDefault();
+            if (!gameRunning) return;
+            
+            isDragging = false;
+            confirmChain();
+        }
+        
+        // タイマー
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        // ゲーム終了
+        function endGame() {
+            gameRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOverScreen').classList.add('show');
+        }
+        
+        // ゲームリセット
+        function resetGame() {
+            // 既存のツムを削除
+            tsums.forEach(tsum => Composite.remove(engine.world, tsum));
+            tsums = [];
+            currentChain = [];
+            score = 0;
+            timeLeft = GAME_TIME;
+            
+            document.getElementById('score').textContent = '0';
+            document.getElementById('time').textContent = GAME_TIME;
+            document.getElementById('gameOverScreen').classList.remove('show');
+            
+            // 新しいツムを配置
+            spawnInitialTsums();
+            
+            gameRunning = true;
+            startTimer();
+            gameLoop();
+        }
+        
+        // ゲーム開始
+        function startGame() {
+            document.getElementById('startScreen').classList.add('hidden');
+            initPhysics();
+            spawnInitialTsums();
+            
+            // イベントリスナー設定
+            canvas.addEventListener('mousedown', handleStart);
+            canvas.addEventListener('mousemove', handleMove);
+            canvas.addEventListener('mouseup', handleEnd);
+            canvas.addEventListener('mouseleave', handleEnd);
+            
+            canvas.addEventListener('touchstart', handleStart, { passive: false });
+            canvas.addEventListener('touchmove', handleMove, { passive: false });
+            canvas.addEventListener('touchend', handleEnd, { passive: false });
+            canvas.addEventListener('touchcancel', handleEnd, { passive: false });
+            
+            gameRunning = true;
+            startTimer();
+            gameLoop();
+        }
+        
+        // ボタンイベント
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('restartBtn').addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
+
