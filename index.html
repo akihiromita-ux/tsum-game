@@ -41,6 +41,32 @@
             pointer-events: none;
         }
         
+        body.fever::before {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,100,100,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,200,100,0.3) 0%, transparent 40%),
+                radial-gradient(circle at 40% 40%, rgba(255,150,200,0.3) 0%, transparent 30%);
+            animation: feverPulse 0.5s ease-in-out infinite alternate;
+        }
+        
+        body.final-rush::before {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,50,50,0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,150,50,0.4) 0%, transparent 40%),
+                radial-gradient(circle at 40% 40%, rgba(255,100,150,0.4) 0%, transparent 30%);
+            animation: rushPulse 0.2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes feverPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes rushPulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.02); }
+        }
+        
         .game-container {
             position: relative;
             background: rgba(255, 255, 255, 0.95);
@@ -51,6 +77,28 @@
                 0 10px 30px rgba(0, 0, 0, 0.1),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
             max-width: 100vw;
+            transition: all 0.3s ease;
+        }
+        
+        .game-container.fever {
+            box-shadow: 
+                0 0 50px rgba(255, 100, 100, 0.6),
+                0 0 100px rgba(255, 200, 100, 0.4),
+                0 25px 80px rgba(255, 107, 107, 0.4);
+        }
+        
+        .game-container.final-rush {
+            box-shadow: 
+                0 0 60px rgba(255, 50, 50, 0.7),
+                0 0 120px rgba(255, 100, 50, 0.5),
+                0 25px 80px rgba(255, 50, 50, 0.5);
+            animation: containerShake 0.1s ease-in-out infinite;
+        }
+        
+        @keyframes containerShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
         }
         
         .header {
@@ -69,10 +117,144 @@
             font-weight: 700;
             font-size: 18px;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .score-box.fever, .time-box.fever {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.6);
+            animation: feverGlow 0.3s ease-in-out infinite alternate;
+        }
+        
+        .time-box.final-rush {
+            background: linear-gradient(135deg, #ff3333, #ff6600);
+            box-shadow: 0 4px 25px rgba(255, 50, 50, 0.8);
+            animation: rushGlow 0.15s ease-in-out infinite alternate;
+        }
+        
+        @keyframes feverGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        @keyframes rushGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        
+        .fever-bar-container {
+            padding: 0 15px 5px;
+        }
+        
+        .fever-bar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .fever-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff6b6b;
+            min-width: 50px;
+        }
+        
+        .fever-bar {
+            flex: 1;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .fever-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #ff6b6b);
+            background-size: 200% 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+        
+        .fever-bar-fill.active {
+            animation: feverBarMove 0.5s linear infinite;
+        }
+        
+        @keyframes feverBarMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        .fever-timer {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ff6b6b;
+            min-width: 30px;
+            text-align: right;
+        }
+        
+        .fever-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 72px;
+            font-weight: 900;
+            color: #ff6b6b;
+            text-shadow: 
+                0 0 20px rgba(255, 107, 107, 0.8),
+                0 0 40px rgba(255, 200, 100, 0.6),
+                0 4px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2000;
+        }
+        
+        .fever-display.show {
+            animation: feverShow 1s ease-out forwards;
+        }
+        
+        @keyframes feverShow {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); }
+            30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(5deg); }
+            60% { transform: translate(-50%, -50%) scale(1) rotate(-3deg); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+        }
+        
+        /* ラスト10秒表示 */
+        .rush-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 64px;
+            font-weight: 900;
+            color: #ff3333;
+            text-shadow: 
+                0 0 30px rgba(255, 50, 50, 0.9),
+                0 0 60px rgba(255, 100, 50, 0.7),
+                0 4px 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2000;
+        }
+        
+        .rush-display.show {
+            animation: rushShow 1.2s ease-out forwards;
+        }
+        
+        @keyframes rushShow {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+            40% { transform: translate(-50%, -50%) scale(1); }
+            60% { transform: translate(-50%, -50%) scale(1.2); }
+            80% { transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
         
         .skill-bar-container {
-            padding: 5px 15px 10px;
+            padding: 5px 15px 5px;
         }
         
         .skill-bar-wrapper {
@@ -202,9 +384,17 @@
             border-radius: 20px;
             background: linear-gradient(180deg, #ffecd2 0%, #fcb69f 100%);
             display: block;
+            transition: all 0.3s ease;
         }
         
-        /* 花火キャンバス */
+        #gameCanvas.fever {
+            box-shadow: inset 0 0 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        #gameCanvas.final-rush {
+            box-shadow: inset 0 0 40px rgba(255, 50, 50, 0.4);
+        }
+        
         #fireworkCanvas {
             position: fixed;
             top: 0;
@@ -215,7 +405,6 @@
             z-index: 2000;
         }
         
-        /* 必殺技セレクター */
         .skill-selector {
             position: fixed;
             top: 0;
@@ -353,6 +542,7 @@
             color: #666;
             font-size: 14px;
             margin-bottom: 30px;
+            line-height: 1.6;
         }
         
         .restart-btn {
@@ -467,6 +657,9 @@
 <body>
     <canvas id="fireworkCanvas"></canvas>
     
+    <div class="fever-display" id="feverDisplay">🔥 FEVER! 🔥</div>
+    <div class="rush-display" id="rushDisplay">⚡ FINAL 10 ⚡</div>
+    
     <div class="start-screen" id="startScreen">
         <div class="title">🎮 ツムパズル</div>
         <div class="subtitle">同じ色をつなげて消そう！</div>
@@ -480,21 +673,30 @@
         <button class="start-btn" id="startBtn">スタート！</button>
         <div class="instructions">
             👆 同じ色のツムを3つ以上なぞってつなげよう<br>
-            ⏱️ 60秒で高スコアを目指せ！<br>
-            💥 100個消すと必殺技が使える！
+            🔥 40個消すとFEVER発動！時間+5秒&スコア2倍<br>
+            💥 累計100個で必殺技！
         </div>
     </div>
     
-    <div class="game-container">
+    <div class="game-container" id="gameContainer">
         <div class="header">
-            <div class="score-box">🌟 <span id="score">0</span></div>
-            <div class="time-box">⏱️ <span id="time">60</span></div>
+            <div class="score-box" id="scoreBox">🌟 <span id="score">0</span></div>
+            <div class="time-box" id="timeBox">⏱️ <span id="time">60</span></div>
+        </div>
+        <div class="fever-bar-container">
+            <div class="fever-bar-wrapper">
+                <div class="fever-label" id="feverLabel">FEVER</div>
+                <div class="fever-bar">
+                    <div class="fever-bar-fill" id="feverBarFill"></div>
+                </div>
+                <div class="fever-timer" id="feverTimer"></div>
+            </div>
         </div>
         <div class="skill-bar-container">
             <div class="skill-bar-wrapper">
                 <div class="skill-bar">
                     <div class="skill-bar-fill" id="skillBarFill"></div>
-                    <div class="skill-bar-text" id="skillBarText">0 / 100</div>
+                    <div class="skill-bar-text" id="skillBarText">0個</div>
                 </div>
                 <button class="skill-btn" id="skillBtn">
                     💥必殺技
@@ -546,8 +748,7 @@
                     const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.5;
                     const speed = 3 + Math.random() * 5;
                     this.particles.push({
-                        x: x,
-                        y: y,
+                        x: x, y: y,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed,
                         color: color,
@@ -567,8 +768,6 @@
                         const x = centerX + (Math.random() - 0.5) * 300;
                         const y = centerY + (Math.random() - 0.5) * 200;
                         this.createFirework(x, y, color);
-                        
-                        // 追加の小さい花火
                         setTimeout(() => {
                             this.createFirework(x + 50, y - 30, color);
                             this.createFirework(x - 50, y + 30, color);
@@ -582,18 +781,11 @@
                 
                 for (let i = this.particles.length - 1; i >= 0; i--) {
                     const p = this.particles[i];
-                    
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += 0.1; // 重力
-                    p.vx *= 0.98;
-                    p.vy *= 0.98;
+                    p.x += p.vx; p.y += p.vy;
+                    p.vy += 0.1; p.vx *= 0.98; p.vy *= 0.98;
                     p.life -= p.decay;
                     
-                    if (p.life <= 0) {
-                        this.particles.splice(i, 1);
-                        continue;
-                    }
+                    if (p.life <= 0) { this.particles.splice(i, 1); continue; }
                     
                     this.ctx.beginPath();
                     this.ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
@@ -601,7 +793,6 @@
                     this.ctx.globalAlpha = p.life;
                     this.ctx.fill();
                     
-                    // 光の軌跡
                     this.ctx.beginPath();
                     this.ctx.arc(p.x, p.y, p.size * p.life * 2, 0, Math.PI * 2);
                     this.ctx.fillStyle = 'white';
@@ -610,10 +801,7 @@
                 }
                 
                 this.ctx.globalAlpha = 1;
-                
-                if (this.particles.length > 0) {
-                    requestAnimationFrame(() => this.update());
-                }
+                if (this.particles.length > 0) requestAnimationFrame(() => this.update());
             }
             
             start() {
@@ -629,9 +817,8 @@
             constructor() {
                 this.audioContext = null;
                 this.enabled = true;
-                this.bgmOscillator = null;
-                this.bgmGain = null;
                 this.initialized = false;
+                this.currentBgmType = 'normal'; // normal, fever, rush
             }
             
             init() {
@@ -642,44 +829,33 @@
             
             playPop(pitch = 1) {
                 if (!this.enabled || !this.audioContext) return;
-                
                 const osc = this.audioContext.createOscillator();
                 const gain = this.audioContext.createGain();
-                
                 osc.connect(gain);
                 gain.connect(this.audioContext.destination);
-                
                 osc.frequency.setValueAtTime(600 * pitch, this.audioContext.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(800 * pitch, this.audioContext.currentTime + 0.1);
-                
                 gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
-                
                 osc.start(this.audioContext.currentTime);
                 osc.stop(this.audioContext.currentTime + 0.15);
             }
             
             playChainSuccess(chainLength) {
                 if (!this.enabled || !this.audioContext) return;
-                
                 const baseFreq = 400;
                 const notes = [1, 1.25, 1.5, 1.875, 2];
-                
                 for (let i = 0; i < Math.min(chainLength, 8); i++) {
                     setTimeout(() => {
                         const osc = this.audioContext.createOscillator();
                         const gain = this.audioContext.createGain();
-                        
                         osc.type = 'sine';
                         osc.connect(gain);
                         gain.connect(this.audioContext.destination);
-                        
                         const freq = baseFreq * notes[i % notes.length] * (1 + Math.floor(i / 5) * 0.5);
                         osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
-                        
                         gain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
-                        
                         osc.start(this.audioContext.currentTime);
                         osc.stop(this.audioContext.currentTime + 0.2);
                     }, i * 60);
@@ -688,27 +864,19 @@
             
             playBigChain() {
                 if (!this.enabled || !this.audioContext) return;
-                
                 const notes = [523.25, 659.25, 783.99, 1046.50];
-                
                 notes.forEach((freq, i) => {
                     setTimeout(() => {
                         const osc = this.audioContext.createOscillator();
                         const osc2 = this.audioContext.createOscillator();
                         const gain = this.audioContext.createGain();
-                        
-                        osc.type = 'sine';
-                        osc2.type = 'triangle';
-                        osc.connect(gain);
-                        osc2.connect(gain);
+                        osc.type = 'sine'; osc2.type = 'triangle';
+                        osc.connect(gain); osc2.connect(gain);
                         gain.connect(this.audioContext.destination);
-                        
                         osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
                         osc2.frequency.setValueAtTime(freq * 2, this.audioContext.currentTime);
-                        
                         gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.4);
-                        
                         osc.start(this.audioContext.currentTime);
                         osc2.start(this.audioContext.currentTime);
                         osc.stop(this.audioContext.currentTime + 0.4);
@@ -717,31 +885,21 @@
                 });
             }
             
-            // 必殺技発動音
             playSkillActivate() {
                 if (!this.enabled || !this.audioContext) return;
-                
-                // 上昇音
                 const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
-                
                 notes.forEach((freq, i) => {
                     setTimeout(() => {
                         const osc = this.audioContext.createOscillator();
                         const osc2 = this.audioContext.createOscillator();
                         const gain = this.audioContext.createGain();
-                        
-                        osc.type = 'sine';
-                        osc2.type = 'square';
-                        osc.connect(gain);
-                        osc2.connect(gain);
+                        osc.type = 'sine'; osc2.type = 'square';
+                        osc.connect(gain); osc2.connect(gain);
                         gain.connect(this.audioContext.destination);
-                        
                         osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
                         osc2.frequency.setValueAtTime(freq * 0.5, this.audioContext.currentTime);
-                        
                         gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
-                        
                         osc.start(this.audioContext.currentTime);
                         osc2.start(this.audioContext.currentTime);
                         osc.stop(this.audioContext.currentTime + 0.2);
@@ -750,80 +908,109 @@
                 });
             }
             
-            // 花火音
             playFirework() {
                 if (!this.enabled || !this.audioContext) return;
-                
-                // シュー音
                 const bufferSize = this.audioContext.sampleRate * 0.5;
                 const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
                 const data = buffer.getChannelData(0);
-                
                 for (let i = 0; i < bufferSize; i++) {
                     data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
                 }
-                
                 const noise = this.audioContext.createBufferSource();
                 const filter = this.audioContext.createBiquadFilter();
                 const gain = this.audioContext.createGain();
-                
                 noise.buffer = buffer;
                 filter.type = 'bandpass';
                 filter.frequency.setValueAtTime(2000, this.audioContext.currentTime);
                 filter.frequency.exponentialRampToValueAtTime(500, this.audioContext.currentTime + 0.3);
-                
                 noise.connect(filter);
                 filter.connect(gain);
                 gain.connect(this.audioContext.destination);
-                
                 gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
-                
                 noise.start(this.audioContext.currentTime);
-                
-                // パン音
-                setTimeout(() => {
-                    const osc = this.audioContext.createOscillator();
-                    const g = this.audioContext.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(800, this.audioContext.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.3);
-                    osc.connect(g);
-                    g.connect(this.audioContext.destination);
-                    g.gain.setValueAtTime(0.3, this.audioContext.currentTime);
-                    g.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-                    osc.start(this.audioContext.currentTime);
-                    osc.stop(this.audioContext.currentTime + 0.3);
-                }, 100);
+            }
+            
+            playFeverStart() {
+                if (!this.enabled || !this.audioContext) return;
+                const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'sine'; osc2.type = 'triangle';
+                        osc.connect(gain); osc2.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        osc2.frequency.setValueAtTime(freq * 1.5, this.audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc.start(this.audioContext.currentTime);
+                        osc2.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.3);
+                        osc2.stop(this.audioContext.currentTime + 0.3);
+                    }, i * 80);
+                });
+            }
+            
+            // ラスト10秒開始音
+            playRushStart() {
+                if (!this.enabled || !this.audioContext) return;
+                // 警告音的なファンファーレ
+                const pattern = [
+                    { freq: 880, delay: 0 },
+                    { freq: 880, delay: 100 },
+                    { freq: 880, delay: 200 },
+                    { freq: 1174.66, delay: 350 },
+                    { freq: 1318.51, delay: 500 }
+                ];
+                pattern.forEach(({ freq, delay }) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'square';
+                        osc2.type = 'sawtooth';
+                        osc.connect(gain);
+                        osc2.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        osc2.frequency.setValueAtTime(freq * 0.5, this.audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+                        osc.start(this.audioContext.currentTime);
+                        osc2.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.2);
+                        osc2.stop(this.audioContext.currentTime + 0.2);
+                    }, delay);
+                });
             }
             
             playGameOver() {
                 if (!this.enabled || !this.audioContext) return;
-                
                 const notes = [440, 415.30, 392, 349.23];
-                
                 notes.forEach((freq, i) => {
                     setTimeout(() => {
                         const osc = this.audioContext.createOscillator();
                         const gain = this.audioContext.createGain();
-                        
                         osc.type = 'sine';
                         osc.connect(gain);
                         gain.connect(this.audioContext.destination);
-                        
                         osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
-                        
                         gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
-                        
                         osc.start(this.audioContext.currentTime);
                         osc.stop(this.audioContext.currentTime + 0.5);
                     }, i * 200);
                 });
             }
             
-            startBGM() {
-                if (!this.enabled || !this.audioContext || this.bgmInterval) return;
+            // 通常BGM
+            startNormalBGM() {
+                if (!this.enabled || !this.audioContext) return;
+                this.stopBGM();
+                this.currentBgmType = 'normal';
                 
                 this.bgmGain = this.audioContext.createGain();
                 this.bgmGain.gain.setValueAtTime(0.08, this.audioContext.currentTime);
@@ -833,27 +1020,176 @@
                 let noteIndex = 0;
                 
                 const playNext = () => {
-                    if (!this.enabled || !this.bgmGain) return;
-                    
+                    if (!this.enabled || !this.bgmGain || this.currentBgmType !== 'normal') return;
                     const osc = this.audioContext.createOscillator();
                     const noteGain = this.audioContext.createGain();
-                    
                     osc.type = 'sine';
                     osc.connect(noteGain);
                     noteGain.connect(this.bgmGain);
-                    
                     osc.frequency.setValueAtTime(notes[noteIndex], this.audioContext.currentTime);
-                    
                     noteGain.gain.setValueAtTime(0.5, this.audioContext.currentTime);
                     noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
-                    
                     osc.start(this.audioContext.currentTime);
                     osc.stop(this.audioContext.currentTime + 0.3);
-                    
                     noteIndex = (noteIndex + 1) % notes.length;
                 };
                 
                 this.bgmInterval = setInterval(playNext, 250);
+                playNext();
+            }
+            
+            // FEVER専用BGM - 華やかで特別感のある音楽
+            startFeverBGM() {
+                if (!this.enabled || !this.audioContext) return;
+                this.stopBGM();
+                this.currentBgmType = 'fever';
+                
+                this.bgmGain = this.audioContext.createGain();
+                this.bgmGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                this.bgmGain.connect(this.audioContext.destination);
+                
+                // 華やかなコード進行
+                const chords = [
+                    [523.25, 659.25, 783.99], // C major
+                    [587.33, 739.99, 880.00], // D major
+                    [659.25, 830.61, 987.77], // E major
+                    [698.46, 880.00, 1046.50], // F major
+                ];
+                let chordIndex = 0;
+                let beatCount = 0;
+                
+                const playNext = () => {
+                    if (!this.enabled || !this.bgmGain || this.currentBgmType !== 'fever') return;
+                    
+                    const chord = chords[chordIndex];
+                    
+                    // コード音
+                    if (beatCount % 2 === 0) {
+                        chord.forEach((freq, i) => {
+                            const osc = this.audioContext.createOscillator();
+                            const noteGain = this.audioContext.createGain();
+                            osc.type = i === 0 ? 'sine' : 'triangle';
+                            osc.connect(noteGain);
+                            noteGain.connect(this.bgmGain);
+                            osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                            noteGain.gain.setValueAtTime(0.3 - i * 0.05, this.audioContext.currentTime);
+                            noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.25);
+                            osc.start(this.audioContext.currentTime);
+                            osc.stop(this.audioContext.currentTime + 0.25);
+                        });
+                    } else {
+                        // アルペジオ
+                        const arpeggioNote = chord[beatCount % 3];
+                        const osc = this.audioContext.createOscillator();
+                        const noteGain = this.audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.connect(noteGain);
+                        noteGain.connect(this.bgmGain);
+                        osc.frequency.setValueAtTime(arpeggioNote * 2, this.audioContext.currentTime);
+                        noteGain.gain.setValueAtTime(0.4, this.audioContext.currentTime);
+                        noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                        osc.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.15);
+                    }
+                    
+                    beatCount++;
+                    if (beatCount % 4 === 0) {
+                        chordIndex = (chordIndex + 1) % chords.length;
+                    }
+                };
+                
+                this.bgmInterval = setInterval(playNext, 150);
+                playNext();
+            }
+            
+            // ラスト10秒専用BGM - 疾走感のある音楽
+            startRushBGM() {
+                if (!this.enabled || !this.audioContext) return;
+                this.stopBGM();
+                this.currentBgmType = 'rush';
+                
+                this.bgmGain = this.audioContext.createGain();
+                this.bgmGain.gain.setValueAtTime(0.12, this.audioContext.currentTime);
+                this.bgmGain.connect(this.audioContext.destination);
+                
+                // 高速アルペジオ
+                const rushNotes = [
+                    523.25, 659.25, 783.99, 1046.50, // C major arpeggio up
+                    987.77, 783.99, 659.25, 523.25, // down
+                    587.33, 739.99, 880.00, 1174.66, // D major arpeggio up
+                    1046.50, 880.00, 739.99, 587.33, // down
+                ];
+                let noteIndex = 0;
+                let tick = 0;
+                
+                const playNext = () => {
+                    if (!this.enabled || !this.bgmGain || this.currentBgmType !== 'rush') return;
+                    
+                    // メインメロディ
+                    const freq = rushNotes[noteIndex];
+                    const osc = this.audioContext.createOscillator();
+                    const osc2 = this.audioContext.createOscillator();
+                    const noteGain = this.audioContext.createGain();
+                    
+                    osc.type = 'sawtooth';
+                    osc2.type = 'square';
+                    osc.connect(noteGain);
+                    osc2.connect(noteGain);
+                    noteGain.connect(this.bgmGain);
+                    
+                    osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                    osc2.frequency.setValueAtTime(freq * 0.5, this.audioContext.currentTime);
+                    
+                    noteGain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
+                    noteGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.08);
+                    
+                    osc.start(this.audioContext.currentTime);
+                    osc2.start(this.audioContext.currentTime);
+                    osc.stop(this.audioContext.currentTime + 0.08);
+                    osc2.stop(this.audioContext.currentTime + 0.08);
+                    
+                    // ドラム的なビート
+                    if (tick % 2 === 0) {
+                        const kick = this.audioContext.createOscillator();
+                        const kickGain = this.audioContext.createGain();
+                        kick.type = 'sine';
+                        kick.connect(kickGain);
+                        kickGain.connect(this.bgmGain);
+                        kick.frequency.setValueAtTime(150, this.audioContext.currentTime);
+                        kick.frequency.exponentialRampToValueAtTime(50, this.audioContext.currentTime + 0.1);
+                        kickGain.gain.setValueAtTime(0.4, this.audioContext.currentTime);
+                        kickGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                        kick.start(this.audioContext.currentTime);
+                        kick.stop(this.audioContext.currentTime + 0.1);
+                    }
+                    
+                    // ハイハット的な音
+                    if (tick % 1 === 0) {
+                        const hihat = this.audioContext.createBufferSource();
+                        const hihatBuffer = this.audioContext.createBuffer(1, 1000, this.audioContext.sampleRate);
+                        const hihatData = hihatBuffer.getChannelData(0);
+                        for (let i = 0; i < 1000; i++) {
+                            hihatData[i] = (Math.random() * 2 - 1) * (1 - i / 1000);
+                        }
+                        hihat.buffer = hihatBuffer;
+                        const hihatGain = this.audioContext.createGain();
+                        const hihatFilter = this.audioContext.createBiquadFilter();
+                        hihatFilter.type = 'highpass';
+                        hihatFilter.frequency.setValueAtTime(8000, this.audioContext.currentTime);
+                        hihat.connect(hihatFilter);
+                        hihatFilter.connect(hihatGain);
+                        hihatGain.connect(this.bgmGain);
+                        hihatGain.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+                        hihatGain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
+                        hihat.start(this.audioContext.currentTime);
+                    }
+                    
+                    noteIndex = (noteIndex + 1) % rushNotes.length;
+                    tick++;
+                };
+                
+                // 高速テンポ！
+                this.bgmInterval = setInterval(playNext, 80);
                 playNext();
             }
             
@@ -866,6 +1202,23 @@
                     this.bgmGain.disconnect();
                     this.bgmGain = null;
                 }
+                this.currentBgmType = null;
+            }
+            
+            // BGM切り替え
+            switchBGM(type) {
+                if (this.currentBgmType === type) return;
+                
+                switch (type) {
+                    case 'fever':
+                        this.startFeverBGM();
+                        break;
+                    case 'rush':
+                        this.startRushBGM();
+                        break;
+                    default:
+                        this.startNormalBGM();
+                }
             }
             
             toggle() {
@@ -873,7 +1226,7 @@
                 if (!this.enabled) {
                     this.stopBGM();
                 } else if (gameRunning) {
-                    this.startBGM();
+                    this.startNormalBGM();
                 }
                 return this.enabled;
             }
@@ -892,19 +1245,18 @@
         ];
         const GAME_TIME = 60;
         const MIN_CHAIN = 3;
-        const SKILL_THRESHOLD = 100;
+        const FEVER_THRESHOLD = 40;
+        const FEVER_DURATION = 8;
+        const FEVER_TIME_BONUS = 5;
+        const RUSH_TIME = 10;
         
-        // Matter.js セットアップ
-        const { Engine, Render, Runner, Bodies, Body, Composite, Events, Mouse, Query } = Matter;
+        const { Engine, Render, Runner, Bodies, Body, Composite } = Matter;
         
-        // キャンバスサイズ
         const canvasWidth = Math.min(360, window.innerWidth - 40);
-        const canvasHeight = Math.min(500, window.innerHeight - 250);
+        const canvasHeight = Math.min(480, window.innerHeight - 280);
         
-        // ゲーム状態
-        let engine, render, runner;
+        let engine, runner;
         let tsums = [];
-        let selectedTsums = [];
         let currentChain = [];
         let isDragging = false;
         let score = 0;
@@ -912,17 +1264,20 @@
         let gameRunning = false;
         let timerInterval;
         let totalCleared = 0;
-        let skillLevel = 0;
         let selectedColors = [];
         let skillUsedCount = 0;
+        let feverGauge = 0;
+        let isFever = false;
+        let feverTimeLeft = 0;
+        let feverInterval = null;
+        let feverCount = 0;
+        let isRushMode = false;
         
-        // キャンバス設定
         const canvas = document.getElementById('gameCanvas');
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
         const ctx = canvas.getContext('2d');
         
-        // 必殺技レベル計算
         function getSkillLevel() {
             if (totalCleared >= 500) return 5;
             if (totalCleared >= 400) return 4;
@@ -932,38 +1287,122 @@
             return 0;
         }
         
-        // 必殺技ゲージ更新
         function updateSkillBar() {
             const level = getSkillLevel();
-            const thresholds = [100, 200, 300, 400, 500];
-            const prevThreshold = level > 0 ? thresholds[level - 1] : 0;
-            const nextThreshold = thresholds[Math.min(level, 4)];
-            
-            const progress = level >= 5 ? 100 : 
-                ((totalCleared - prevThreshold) / (nextThreshold - prevThreshold)) * 100;
-            
-            document.getElementById('skillBarFill').style.width = `${Math.min(100, progress)}%`;
-            document.getElementById('skillBarText').textContent = 
-                level >= 5 ? 'MAX!' : `${totalCleared} / ${nextThreshold}`;
+            const progress = Math.min(100, (totalCleared / 500) * 100);
+            document.getElementById('skillBarFill').style.width = `${progress}%`;
+            document.getElementById('skillBarText').textContent = `${totalCleared}個`;
             
             const skillBtn = document.getElementById('skillBtn');
-            const newLevel = getSkillLevel();
-            
-            if (newLevel > 0 && newLevel > skillLevel) {
+            if (level > 0) {
                 skillBtn.classList.add('ready');
-                document.getElementById('skillLevel').textContent = `Lv.${newLevel} (${newLevel}色)`;
+                document.getElementById('skillLevel').textContent = `Lv.${level} (${level}色)`;
+            } else {
+                skillBtn.classList.remove('ready');
+                document.getElementById('skillLevel').textContent = 'Lv.1';
             }
-            
-            skillLevel = newLevel;
         }
         
-        // 色選択UI作成
+        function updateFeverBar() {
+            const progress = (feverGauge / FEVER_THRESHOLD) * 100;
+            const fill = document.getElementById('feverBarFill');
+            fill.style.width = `${Math.min(100, progress)}%`;
+            
+            if (isFever) {
+                fill.classList.add('active');
+                document.getElementById('feverTimer').textContent = `${feverTimeLeft}s`;
+                document.getElementById('feverLabel').textContent = '🔥FEVER';
+            } else {
+                fill.classList.remove('active');
+                document.getElementById('feverTimer').textContent = '';
+                document.getElementById('feverLabel').textContent = 'FEVER';
+            }
+        }
+        
+        function startFever() {
+            if (isFever) return;
+            
+            isFever = true;
+            feverTimeLeft = FEVER_DURATION;
+            feverGauge = 0;
+            feverCount++;
+            
+            timeLeft += FEVER_TIME_BONUS;
+            document.getElementById('time').textContent = timeLeft;
+            
+            soundManager.playFeverStart();
+            soundManager.switchBGM('fever');
+            
+            document.getElementById('feverDisplay').classList.add('show');
+            setTimeout(() => document.getElementById('feverDisplay').classList.remove('show'), 1000);
+            
+            document.body.classList.add('fever');
+            document.getElementById('gameContainer').classList.add('fever');
+            document.getElementById('gameCanvas').classList.add('fever');
+            document.getElementById('scoreBox').classList.add('fever');
+            document.getElementById('timeBox').classList.add('fever');
+            
+            feverInterval = setInterval(() => {
+                feverTimeLeft--;
+                updateFeverBar();
+                if (feverTimeLeft <= 0) endFever();
+            }, 1000);
+            
+            updateFeverBar();
+        }
+        
+        function endFever() {
+            isFever = false;
+            feverTimeLeft = 0;
+            
+            if (feverInterval) {
+                clearInterval(feverInterval);
+                feverInterval = null;
+            }
+            
+            document.body.classList.remove('fever');
+            document.getElementById('gameContainer').classList.remove('fever');
+            document.getElementById('gameCanvas').classList.remove('fever');
+            document.getElementById('scoreBox').classList.remove('fever');
+            document.getElementById('timeBox').classList.remove('fever');
+            
+            // FEVERが終わった後のBGM
+            if (isRushMode) {
+                soundManager.switchBGM('rush');
+            } else {
+                soundManager.switchBGM('normal');
+            }
+            
+            updateFeverBar();
+        }
+        
+        // ラスト10秒モード開始
+        function startRushMode() {
+            if (isRushMode) return;
+            isRushMode = true;
+            
+            soundManager.playRushStart();
+            
+            // FEVERでなければRush BGMに切り替え
+            if (!isFever) {
+                soundManager.switchBGM('rush');
+            }
+            
+            document.getElementById('rushDisplay').classList.add('show');
+            setTimeout(() => document.getElementById('rushDisplay').classList.remove('show'), 1200);
+            
+            document.body.classList.add('final-rush');
+            document.getElementById('gameContainer').classList.add('final-rush');
+            document.getElementById('gameCanvas').classList.add('final-rush');
+            document.getElementById('timeBox').classList.add('final-rush');
+        }
+        
         function createColorOptions(maxColors) {
             const container = document.getElementById('colorOptions');
             container.innerHTML = '';
             selectedColors = [];
             
-            TSUM_TYPES.forEach((type, index) => {
+            TSUM_TYPES.forEach((type) => {
                 const option = document.createElement('div');
                 option.className = 'color-option';
                 option.style.background = `linear-gradient(135deg, ${type.gradient[0]}, ${type.gradient[1]})`;
@@ -977,57 +1416,53 @@
                         option.classList.add('selected');
                         selectedColors.push(type.name);
                     }
-                    
                     document.getElementById('skillConfirmBtn').disabled = selectedColors.length === 0;
                 });
                 
                 container.appendChild(option);
             });
             
-            document.getElementById('skillSelectorSubtitle').textContent = 
-                `消す色を${maxColors}つまで選んでください`;
+            document.getElementById('skillSelectorSubtitle').textContent = `消す色を${maxColors}つまで選んでください`;
         }
         
-        // 必殺技発動
         function activateSkill() {
             const level = getSkillLevel();
             if (level === 0) return;
             
-            createColorOptions(level);
-            document.getElementById('skillSelector').classList.add('show');
-            document.getElementById('skillConfirmBtn').disabled = true;
+            // 自動的に一番多い色を探す
+            const colorCounts = {};
+            TSUM_TYPES.forEach(type => colorCounts[type.name] = 0);
+            tsums.forEach(tsum => colorCounts[tsum.tsumType.name]++);
+            
+            // 多い順にソート
+            const sortedColors = Object.entries(colorCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(entry => entry[0]);
+            
+            // レベルに応じた色数を選択
+            const colorsToRemove = sortedColors.slice(0, level);
+            
+            executeSkillAuto(colorsToRemove);
         }
         
-        // 必殺技実行
-        function executeSkill() {
-            document.getElementById('skillSelector').classList.remove('show');
-            
-            if (selectedColors.length === 0) return;
-            
+        function executeSkillAuto(colorsToRemove) {
             soundManager.playSkillActivate();
             
-            // 選択した色のツムを全て消す
-            const colorsToRemove = [...selectedColors];
             const tsumsToRemove = tsums.filter(t => colorsToRemove.includes(t.tsumType.name));
-            
             if (tsumsToRemove.length === 0) return;
             
-            // スコア計算
             const clearedCount = tsumsToRemove.length;
-            const skillBonus = clearedCount * 15 * selectedColors.length;
-            score += skillBonus;
+            const skillBonus = clearedCount * 15 * colorsToRemove.length;
+            const finalBonus = isFever ? skillBonus * 2 : skillBonus;
+            score += finalBonus;
             document.getElementById('score').textContent = score;
             
-            // チェーンインジケーター
             const indicator = document.getElementById('chainIndicator');
-            indicator.textContent = `💥 ${clearedCount}個消去！`;
+            indicator.textContent = isFever ? `💥 ${clearedCount}個消去! x2` : `💥 ${clearedCount}個消去！`;
             indicator.classList.add('show');
             setTimeout(() => indicator.classList.remove('show'), 800);
             
-            // 花火エフェクト
-            const fireworkColors = colorsToRemove.map(name => 
-                TSUM_TYPES.find(t => t.name === name).color
-            );
+            const fireworkColors = colorsToRemove.map(name => TSUM_TYPES.find(t => t.name === name).color);
             
             setTimeout(() => {
                 soundManager.playFirework();
@@ -1035,40 +1470,30 @@
                 fireworkSystem.start();
             }, 300);
             
-            // ツム削除（少し遅延させて演出）
             setTimeout(() => {
                 tsumsToRemove.forEach(tsum => {
                     Composite.remove(engine.world, tsum);
                     const index = tsums.indexOf(tsum);
                     if (index > -1) tsums.splice(index, 1);
                 });
-                
-                // ゲージリセット
-                totalCleared = 0;
-                skillLevel = 0;
+                totalCleared += clearedCount;
                 skillUsedCount++;
                 updateSkillBar();
-                document.getElementById('skillBtn').classList.remove('ready');
-                document.getElementById('skillLevel').textContent = 'Lv.1';
-                
-                // ツム補充
                 setTimeout(refillTsums, 300);
             }, 500);
         }
         
-        // 物理エンジン初期化
         function initPhysics() {
             engine = Engine.create();
             engine.gravity.y = 1;
             
             const walls = [
-                Bodies.rectangle(canvasWidth / 2, canvasHeight + 30, canvasWidth + 100, 60, { isStatic: true, label: 'floor' }),
-                Bodies.rectangle(-30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true, label: 'leftWall' }),
-                Bodies.rectangle(canvasWidth + 30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true, label: 'rightWall' })
+                Bodies.rectangle(canvasWidth / 2, canvasHeight + 30, canvasWidth + 100, 60, { isStatic: true }),
+                Bodies.rectangle(-30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true }),
+                Bodies.rectangle(canvasWidth + 30, canvasHeight / 2, 60, canvasHeight + 100, { isStatic: true })
             ];
             
             Composite.add(engine.world, walls);
-            
             runner = Runner.create();
             Runner.run(runner, engine);
         }
@@ -1076,11 +1501,7 @@
         function createTsum(x, y) {
             const type = TSUM_TYPES[Math.floor(Math.random() * TSUM_TYPES.length)];
             const tsum = Bodies.circle(x, y, TSUM_RADIUS, {
-                restitution: 0.3,
-                friction: 0.1,
-                frictionAir: 0.01,
-                label: 'tsum',
-                render: { visible: false }
+                restitution: 0.3, friction: 0.1, frictionAir: 0.01
             });
             tsum.tsumType = type;
             tsum.id = Math.random().toString(36).substr(2, 9);
@@ -1099,15 +1520,11 @@
         
         function refillTsums() {
             const targetCount = 35;
-            const currentCount = tsums.length;
-            const toAdd = targetCount - currentCount;
-            
+            const toAdd = targetCount - tsums.length;
             for (let i = 0; i < toAdd; i++) {
                 const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
                 const y = -50 - Math.random() * 200;
-                setTimeout(() => {
-                    if (gameRunning) createTsum(x, y);
-                }, i * 50);
+                setTimeout(() => { if (gameRunning) createTsum(x, y); }, i * 50);
             }
         }
         
@@ -1185,22 +1602,16 @@
         
         function drawChainLine() {
             if (currentChain.length < 2) return;
-            
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.lineWidth = 6;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.setLineDash([]);
-            
             ctx.beginPath();
             ctx.moveTo(currentChain[0].position.x, currentChain[0].position.y);
-            
             for (let i = 1; i < currentChain.length; i++) {
                 ctx.lineTo(currentChain[i].position.x, currentChain[i].position.y);
             }
-            
             ctx.stroke();
-            
             ctx.strokeStyle = currentChain[0].tsumType.color;
             ctx.lineWidth = 3;
             ctx.stroke();
@@ -1210,8 +1621,16 @@
             if (!gameRunning) return;
             
             const bgGradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
-            bgGradient.addColorStop(0, '#ffecd2');
-            bgGradient.addColorStop(1, '#fcb69f');
+            if (isRushMode) {
+                bgGradient.addColorStop(0, '#ffd0d0');
+                bgGradient.addColorStop(1, '#ff9080');
+            } else if (isFever) {
+                bgGradient.addColorStop(0, '#ffe0e0');
+                bgGradient.addColorStop(1, '#ffb0a0');
+            } else {
+                bgGradient.addColorStop(0, '#ffecd2');
+                bgGradient.addColorStop(1, '#fcb69f');
+            }
             ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             
@@ -1224,11 +1643,7 @@
             });
             
             drawChainLine();
-            
-            tsums.forEach(tsum => {
-                const isSelected = currentChain.includes(tsum);
-                drawTsum(tsum, isSelected);
-            });
+            tsums.forEach(tsum => drawTsum(tsum, currentChain.includes(tsum)));
             
             requestAnimationFrame(gameLoop);
         }
@@ -1237,19 +1652,14 @@
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
+            return { x: clientX - rect.left, y: clientY - rect.top };
         }
         
         function getTsumAt(pos) {
             for (const tsum of tsums) {
                 const dx = tsum.position.x - pos.x;
                 const dy = tsum.position.y - pos.y;
-                if (Math.sqrt(dx * dx + dy * dy) < TSUM_RADIUS) {
-                    return tsum;
-                }
+                if (Math.sqrt(dx * dx + dy * dy) < TSUM_RADIUS) return tsum;
             }
             return null;
         }
@@ -1257,24 +1667,18 @@
         function canAddToChain(tsum) {
             if (currentChain.length === 0) return true;
             if (currentChain.includes(tsum)) return false;
-            
             const lastTsum = currentChain[currentChain.length - 1];
             if (tsum.tsumType.name !== lastTsum.tsumType.name) return false;
-            
             const dx = tsum.position.x - lastTsum.position.x;
             const dy = tsum.position.y - lastTsum.position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            return distance < TSUM_RADIUS * 3;
+            return Math.sqrt(dx * dx + dy * dy) < TSUM_RADIUS * 3;
         }
         
-        function showChainIndicator(count) {
+        function showChainIndicator(count, doubled) {
             const indicator = document.getElementById('chainIndicator');
-            if (count >= 5) {
-                indicator.textContent = count >= 10 ? '🔥 ' + count + ' 🔥' : '✨ ' + count + ' ✨';
-            } else {
-                indicator.textContent = count + 'チェーン！';
-            }
+            let text = count >= 10 ? '🔥 ' + count + ' 🔥' : count >= 5 ? '✨ ' + count + ' ✨' : count + 'チェーン！';
+            if (doubled) text += ' x2';
+            indicator.textContent = text;
             indicator.classList.add('show');
             setTimeout(() => indicator.classList.remove('show'), 500);
         }
@@ -1282,22 +1686,25 @@
         function confirmChain() {
             if (currentChain.length >= MIN_CHAIN) {
                 const chainLength = currentChain.length;
-                const baseScore = chainLength * 10;
-                const bonus = Math.pow(chainLength, 1.5) * 5;
-                const earnedScore = Math.floor(baseScore + bonus);
+                let earnedScore = Math.floor(chainLength * 10 + Math.pow(chainLength, 1.5) * 5);
+                const isDoubled = isFever;
+                if (isDoubled) earnedScore *= 2;
                 
                 score += earnedScore;
                 totalCleared += chainLength;
-                document.getElementById('score').textContent = score;
                 
-                showChainIndicator(chainLength);
-                updateSkillBar();
-                
-                if (chainLength >= 7) {
-                    soundManager.playBigChain();
-                } else {
-                    soundManager.playChainSuccess(chainLength);
+                if (!isFever) {
+                    feverGauge += chainLength;
+                    if (feverGauge >= FEVER_THRESHOLD) startFever();
                 }
+                
+                document.getElementById('score').textContent = score;
+                showChainIndicator(chainLength, isDoubled);
+                updateSkillBar();
+                updateFeverBar();
+                
+                if (chainLength >= 7) soundManager.playBigChain();
+                else soundManager.playChainSuccess(chainLength);
                 
                 currentChain.forEach(tsum => {
                     Composite.remove(engine.world, tsum);
@@ -1307,18 +1714,15 @@
                 
                 setTimeout(refillTsums, 300);
             }
-            
             currentChain = [];
         }
         
         function handleStart(e) {
             e.preventDefault();
             if (!gameRunning) return;
-            
             isDragging = true;
             const pos = getEventPos(e);
             const tsum = getTsumAt(pos);
-            
             if (tsum) {
                 currentChain = [tsum];
                 soundManager.playPop(1);
@@ -1328,10 +1732,8 @@
         function handleMove(e) {
             e.preventDefault();
             if (!isDragging || !gameRunning) return;
-            
             const pos = getEventPos(e);
             const tsum = getTsumAt(pos);
-            
             if (tsum && canAddToChain(tsum)) {
                 currentChain.push(tsum);
                 soundManager.playPop(1 + currentChain.length * 0.1);
@@ -1341,7 +1743,6 @@
         function handleEnd(e) {
             e.preventDefault();
             if (!gameRunning) return;
-            
             isDragging = false;
             confirmChain();
         }
@@ -1351,20 +1752,29 @@
                 timeLeft--;
                 document.getElementById('time').textContent = timeLeft;
                 
-                if (timeLeft <= 0) {
-                    endGame();
+                // ラスト10秒チェック
+                if (timeLeft === RUSH_TIME && !isRushMode) {
+                    startRushMode();
                 }
+                
+                if (timeLeft <= 0) endGame();
             }, 1000);
         }
         
         function endGame() {
             gameRunning = false;
             clearInterval(timerInterval);
+            endFever();
             soundManager.stopBGM();
             soundManager.playGameOver();
+            
+            document.body.classList.remove('final-rush');
+            document.getElementById('gameContainer').classList.remove('final-rush');
+            document.getElementById('gameCanvas').classList.remove('final-rush');
+            document.getElementById('timeBox').classList.remove('final-rush');
+            
             document.getElementById('finalScore').textContent = score;
-            document.getElementById('finalStats').textContent = 
-                `消去数: ${totalCleared}個 | 必殺技: ${skillUsedCount}回`;
+            document.getElementById('finalStats').innerHTML = `消去数: ${totalCleared}個<br>必殺技: ${skillUsedCount}回<br>FEVER: ${feverCount}回`;
             document.getElementById('gameOverScreen').classList.add('show');
         }
         
@@ -1375,50 +1785,58 @@
             score = 0;
             timeLeft = GAME_TIME;
             totalCleared = 0;
-            skillLevel = 0;
             skillUsedCount = 0;
+            feverGauge = 0;
+            feverCount = 0;
+            isFever = false;
+            feverTimeLeft = 0;
+            isRushMode = false;
             
             document.getElementById('score').textContent = '0';
             document.getElementById('time').textContent = GAME_TIME;
             document.getElementById('gameOverScreen').classList.remove('show');
             document.getElementById('skillBtn').classList.remove('ready');
             document.getElementById('skillLevel').textContent = 'Lv.1';
-            updateSkillBar();
             
+            document.body.classList.remove('fever', 'final-rush');
+            document.getElementById('gameContainer').classList.remove('fever', 'final-rush');
+            document.getElementById('gameCanvas').classList.remove('fever', 'final-rush');
+            document.getElementById('scoreBox').classList.remove('fever');
+            document.getElementById('timeBox').classList.remove('fever', 'final-rush');
+            
+            updateSkillBar();
+            updateFeverBar();
             spawnInitialTsums();
             
             gameRunning = true;
-            soundManager.startBGM();
+            soundManager.startNormalBGM();
             startTimer();
             gameLoop();
         }
         
         function startGame() {
             document.getElementById('startScreen').classList.add('hidden');
-            
             soundManager.init();
-            
             initPhysics();
             spawnInitialTsums();
             updateSkillBar();
+            updateFeverBar();
             
             canvas.addEventListener('mousedown', handleStart);
             canvas.addEventListener('mousemove', handleMove);
             canvas.addEventListener('mouseup', handleEnd);
             canvas.addEventListener('mouseleave', handleEnd);
-            
             canvas.addEventListener('touchstart', handleStart, { passive: false });
             canvas.addEventListener('touchmove', handleMove, { passive: false });
             canvas.addEventListener('touchend', handleEnd, { passive: false });
             canvas.addEventListener('touchcancel', handleEnd, { passive: false });
             
             gameRunning = true;
-            soundManager.startBGM();
+            soundManager.startNormalBGM();
             startTimer();
             gameLoop();
         }
         
-        // イベントリスナー
         document.getElementById('soundBtn').addEventListener('click', () => {
             const enabled = soundManager.toggle();
             document.getElementById('soundBtn').textContent = enabled ? '🔊' : '🔇';
