@@ -92,13 +92,6 @@
                 0 0 60px rgba(255, 50, 50, 0.7),
                 0 0 120px rgba(255, 100, 50, 0.5),
                 0 25px 80px rgba(255, 50, 50, 0.5);
-            animation: containerShake 0.1s ease-in-out infinite;
-        }
-        
-        @keyframes containerShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
         }
         
         .header {
@@ -1351,9 +1344,13 @@
                 skillBtn.classList.add('ready');
                 document.getElementById('skillLevel').textContent = `Lv.${level} (${level}色)`;
                 
-                // レベルアップした時にシャキーン！
+                // レベルアップした時にシャキーン！→自動発動！
                 if (level > lastSkillLevel && lastSkillLevel >= 0) {
                     soundManager.playSkillReady();
+                    // 少し遅延して自動発動
+                    setTimeout(() => {
+                        if (gameRunning) activateSkill();
+                    }, 500);
                 }
             } else {
                 skillBtn.classList.remove('ready');
