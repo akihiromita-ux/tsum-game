@@ -908,6 +908,57 @@
                 });
             }
             
+            // 必殺技チャージ完了音（シャキーン！）
+            playSkillReady() {
+                if (!this.enabled || !this.audioContext) return;
+                
+                // キラキラ上昇音
+                const notes = [1046.50, 1318.51, 1567.98, 2093.00];
+                notes.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = this.audioContext.createOscillator();
+                        const osc2 = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.type = 'sine';
+                        osc2.type = 'triangle';
+                        osc.connect(gain);
+                        osc2.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.frequency.setValueAtTime(freq, this.audioContext.currentTime);
+                        osc2.frequency.setValueAtTime(freq * 1.5, this.audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                        osc.start(this.audioContext.currentTime);
+                        osc2.start(this.audioContext.currentTime);
+                        osc.stop(this.audioContext.currentTime + 0.3);
+                        osc2.stop(this.audioContext.currentTime + 0.3);
+                    }, i * 70);
+                });
+                
+                // シャキーン！のシュワッとした音
+                setTimeout(() => {
+                    const bufferSize = this.audioContext.sampleRate * 0.3;
+                    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 2);
+                    }
+                    const noise = this.audioContext.createBufferSource();
+                    const filter = this.audioContext.createBiquadFilter();
+                    const gain = this.audioContext.createGain();
+                    noise.buffer = buffer;
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(3000, this.audioContext.currentTime);
+                    filter.Q.setValueAtTime(5, this.audioContext.currentTime);
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.audioContext.destination);
+                    gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                    noise.start(this.audioContext.currentTime);
+                }, 200);
+            }
+            
             playFirework() {
                 if (!this.enabled || !this.audioContext) return;
                 const bufferSize = this.audioContext.sampleRate * 0.5;
@@ -1252,8 +1303,8 @@
         
         const { Engine, Render, Runner, Bodies, Body, Composite } = Matter;
         
-        const canvasWidth = Math.min(360, window.innerWidth - 40);
-        const canvasHeight = Math.min(480, window.innerHeight - 280);
+        const canvasWidth = Math.min(380, window.innerWidth - 30);
+        const canvasHeight = Math.min(550, window.innerHeight - 250);
         
         let engine, runner;
         let tsums = [];
@@ -1287,6 +1338,8 @@
             return 0;
         }
         
+        let lastSkillLevel = 0;
+        
         function updateSkillBar() {
             const level = getSkillLevel();
             const progress = Math.min(100, (totalCleared / 500) * 100);
@@ -1297,10 +1350,16 @@
             if (level > 0) {
                 skillBtn.classList.add('ready');
                 document.getElementById('skillLevel').textContent = `Lv.${level} (${level}色)`;
+                
+                // レベルアップした時にシャキーン！
+                if (level > lastSkillLevel && lastSkillLevel >= 0) {
+                    soundManager.playSkillReady();
+                }
             } else {
                 skillBtn.classList.remove('ready');
                 document.getElementById('skillLevel').textContent = 'Lv.1';
             }
+            lastSkillLevel = level;
         }
         
         function updateFeverBar() {
@@ -1511,20 +1570,22 @@
         }
         
         function spawnInitialTsums() {
-            for (let i = 0; i < 35; i++) {
+            // 画面を埋め尽くすために多めに生成（上1列分は空ける）
+            const targetCount = 55;
+            for (let i = 0; i < targetCount; i++) {
                 const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
-                const y = -50 - Math.random() * 400;
+                const y = -50 - Math.random() * 500;
                 createTsum(x, y);
             }
         }
         
         function refillTsums() {
-            const targetCount = 35;
+            const targetCount = 55;
             const toAdd = targetCount - tsums.length;
             for (let i = 0; i < toAdd; i++) {
                 const x = TSUM_RADIUS + Math.random() * (canvasWidth - TSUM_RADIUS * 2);
-                const y = -50 - Math.random() * 200;
-                setTimeout(() => { if (gameRunning) createTsum(x, y); }, i * 50);
+                const y = -50 - Math.random() * 300;
+                setTimeout(() => { if (gameRunning) createTsum(x, y); }, i * 40);
             }
         }
         
